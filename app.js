@@ -14,6 +14,7 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(express.json());
 app.use("/posts", postRoute);
 app.use("/auth", authRoute);
