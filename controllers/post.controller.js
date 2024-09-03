@@ -1,8 +1,8 @@
-import prisma from "../lib/prisma";
+import prisma from "../lib/prisma.js";
 
 async function getPosts(req, res) {
   try {
-    const posts = await prisma.Post.findMany();
+    const posts = await prisma.post.findMany();
     res.status(200).json(posts);
   } catch (e) {
     console.log(e);
@@ -13,7 +13,7 @@ async function getPosts(req, res) {
 async function getPost(req, res) {
   try {
     const { id } = req.params;
-    const post = await prisma.Post.fin();
+    // const post = await prisma.post.fin();
     res.status(200).json(post);
   } catch (e) {
     console.log(e);
