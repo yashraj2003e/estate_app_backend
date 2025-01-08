@@ -29,6 +29,9 @@ async function addPost(req, res) {
       data: {
         ...body,
         userId: tokenUserId,
+        postDetail: {
+          create: body.postDetail,
+        },
       },
     });
     res.status(200).json(newPost);

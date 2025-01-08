@@ -23,7 +23,7 @@ model Post {
   id String @id @default(uuid()) @db.Uuid
   title String
   price Int
-  img String
+  images String[]
   address String
   city String
   bedroom Int
@@ -35,6 +35,7 @@ model Post {
   createdAt DateTime @default(now())
   user User @relation(fields: [userId],references: [id])
   userId String @db.Uuid
+  postDetail PostDetail?
 }
 
 enum Type {
@@ -49,6 +50,17 @@ enum Property {
   land
 }
 
-// mode PostDetail {
-//   id String @id @default(auto()) @map("_id")
-// }
+model PostDetail {
+  id String @id @default(uuid()) @map("_id")
+  desc String
+  utilities String?
+  pet String?
+  income String?
+  size Int?
+  school Int?
+  bus Int?
+  restaurant Int?
+  // Relation to the Post model
+  post Post @relation(fields: [postId], references: [id])
+  postId String @db.Uuid @unique
+}
