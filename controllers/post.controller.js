@@ -13,7 +13,18 @@ async function getPosts(req, res) {
 async function getPost(req, res) {
   try {
     const { id } = req.params;
-    // const post = await prisma.post.fin();
+    const post = await prisma.post.findUnique({
+      where: { id },
+      include: {
+        postDetail: true,
+        user: {
+          select: {
+            username: true,
+            avatar: true,
+          },
+        },
+      },
+    });
     res.status(200).json(post);
   } catch (e) {
     console.log(e);
@@ -22,15 +33,18 @@ async function getPost(req, res) {
 }
 
 async function addPost(req, res) {
-  const body = req.body;
+  const { postDetail: postDetail, ...body } = req.body;
+  console.log(body);
   const tokenUserId = req.userId;
+  let d = { ...body };
+  d = d.postData;
   try {
     const newPost = await prisma.post.create({
       data: {
-        ...body,
+        ...d,
         userId: tokenUserId,
         postDetail: {
-          create: body.postDetail,
+          create: postDetail,
         },
       },
     });

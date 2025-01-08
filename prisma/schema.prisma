@@ -60,7 +60,6 @@ model PostDetail {
   school Int?
   bus Int?
   restaurant Int?
-  // Relation to the Post model
   post Post @relation(fields: [postId], references: [id])
   postId String @db.Uuid @unique
 }
