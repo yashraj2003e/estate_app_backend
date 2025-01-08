@@ -48,3 +48,7 @@ enum Property {
   condo
   land
 }
+
+// mode PostDetail {
+//   id String @id @default(auto()) @map("_id")
+// }

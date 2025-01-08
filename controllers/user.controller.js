@@ -16,6 +16,7 @@ async function getUser(req, res) {
     const user = await prisma.user.findUnique({
       where: { id },
     });
+
     res.status(200).json(user);
   } catch (e) {
     console.log(e);

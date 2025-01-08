@@ -29,6 +29,7 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   // db operations
   const { username, password } = req.body;
+  console.log(req.body);
 
   try {
     // Check if the user exists
@@ -37,14 +38,17 @@ export const login = async (req, res) => {
     });
 
     if (!user) {
+      console.log("username not found !");
       return res.status(401).json({ message: "Invalid Credentials !" });
     }
 
     // Check if the password is correct
 
     const isPasswordValid = await bcrpyt.compare(password, user.password);
-
+    // const pass = await bcrpyt.hash(password, 10);
+    // console.log(password, user.password, pass);
     if (!isPasswordValid) {
+      console.log("password not valid !");
       return res.status(401).json({ message: "Invalid Credentials !" });
     }
 
