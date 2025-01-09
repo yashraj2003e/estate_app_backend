@@ -1,8 +1,25 @@
 import prisma from "../lib/prisma.js";
 
 async function getPosts(req, res) {
+  const query = req.query;
+  console.log(query);
   try {
-    const posts = await prisma.post.findMany();
+    const posts = await prisma.post.findMany({
+      where: {
+        city: {
+          contains: query.location || undefined,
+          mode: "insensitive",
+        },
+        bedroom: Number(query.bedroom) || undefined,
+        property: query.property || undefined,
+        type: query.type || undefined,
+        price: {
+          gte: Number(query.minPrice) || 0,
+          lte: Number(query.maxPrice) || 1000000,
+        },
+      },
+    });
+    console.log(posts);
     res.status(200).json(posts);
   } catch (e) {
     console.log(e);
