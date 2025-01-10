@@ -79,4 +79,70 @@ async function deleteUser(req, res) {
   }
 }
 
-export { getUsers, getUser, updateUser, deleteUser };
+async function savePost(req, res) {
+  const postId = req.body.postId;
+  const tokenUserId = req.userId;
+  try {
+    const savedPost = await prisma.savedPost.findUnique({
+      where: {
+        userId_postId: {
+          userId: tokenUserId,
+          postId,
+        },
+      },
+    });
+
+    if (savedPost) {
+      await prisma.savedPost.delete({
+        where: {
+          id: savedPost.id,
+        },
+      });
+      res.status(200).json({ message: "Post removed from the list !" });
+      return;
+    }
+
+    await prisma.savedPost.create({
+      data: {
+        userId: tokenUserId,
+        postId,
+      },
+    });
+
+    res.status(200).json({ message: "Post saved to the list !" });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: "Failed to save post !" });
+  }
+}
+
+async function profilePosts(req, res) {
+  const tokenUserId = req.params.userId;
+  try {
+    const userPosts = await prisma.post.findMany({
+      where: {
+        userId: tokenUserId,
+      },
+    });
+
+    const saved = await prisma.savedPost.findMany({
+      where: {
+        userId: tokenUserId,
+      },
+      include: {
+        post: true,
+      },
+    });
+
+    const savedPost = saved.map((item) => item.post);
+    // console.log({ userPosts, saved })
+    // ;
+    // console.log(savedPost);
+    res.status(200).json({ userPosts, savedPost });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: "Unable to load posts !" });
+  }
+}
+
+export { getUsers, getUser, updateUser, deleteUser, savePost, profilePosts };

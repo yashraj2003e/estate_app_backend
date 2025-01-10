@@ -1,4 +1,5 @@
 import prisma from "../lib/prisma.js";
+import jwt from "jsonwebtoken";
 
 async function getPosts(req, res) {
   const query = req.query;
@@ -19,8 +20,9 @@ async function getPosts(req, res) {
         },
       },
     });
-    console.log(posts);
+    // setTimeout(() => {
     res.status(200).json(posts);
+    // }, 3000);
   } catch (e) {
     console.log(e);
     res.status(500).json({ message: "Failed to get Posts" });
@@ -42,7 +44,31 @@ async function getPost(req, res) {
         },
       },
     });
-    res.status(200).json(post);
+
+    const token = req.cookies?.token;
+
+    if (!token) {
+      return res.status(200).json({ ...post, isSaved: false });
+    } else {
+      jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, payload) => {
+        if (err) {
+          return res.status(200).json({ ...post, isSaved: false });
+        } else {
+          const userId = payload.id;
+          const saved = await prisma.savedPost.findUnique({
+            where: {
+              userId_postId: {
+                postId: id,
+                userId,
+              },
+            },
+          });
+          return res
+            .status(200)
+            .json({ ...post, isSaved: saved ? true : false });
+        }
+      });
+    }
   } catch (e) {
     console.log(e);
     res.status(500).json({ message: "Failed to get Posts" });
