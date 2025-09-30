@@ -116,6 +116,14 @@ async function savePost(req, res) {
   }
 }
 
+async function addMessage(req, res) {
+  try {
+    res.status(200).json({ message: "" });
+  } catch (e) {
+    res.status(500).json({ message: e });
+  }
+}
+
 async function profilePosts(req, res) {
   const tokenUserId = req.params.userId;
   try {
@@ -135,9 +143,7 @@ async function profilePosts(req, res) {
     });
 
     const savedPost = saved.map((item) => item.post);
-    // console.log({ userPosts, saved })
-    // ;
-    // console.log(savedPost);
+
     res.status(200).json({ userPosts, savedPost });
   } catch (e) {
     console.log(e);
@@ -145,4 +151,12 @@ async function profilePosts(req, res) {
   }
 }
 
-export { getUsers, getUser, updateUser, deleteUser, savePost, profilePosts };
+export {
+  addMessage,
+  getUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+  savePost,
+  profilePosts,
+};

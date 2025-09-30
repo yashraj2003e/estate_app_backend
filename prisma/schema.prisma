@@ -78,20 +78,18 @@ model User {
 }
 
 model Chat {
-  id        String    @id @default(uuid()) @db.Uuid
-  users     User[]
-  userIDs String[] @db.Uuid
-  seenBy    String[]  @db.Uuid
-  createdAt DateTime  @default(now())
-  messages  Message[]
-  lastMessage String?
+  id String @id @default(uuid()) @db.Uuid
+  message Message[]
+  userIds User[]
 }
+
 
 model Message {
   id        String   @id @default(uuid()) @db.Uuid
   text      String
   userId    String
-  chat      Chat     @relation(fields: [chatId], references: [id])
+  chat      Chat?     @relation(fields: [chatId], references: [id])
   createdAt DateTime @default(now())
   chatId    String   @db.Uuid
 }
+
